@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Elementor Tableau Dashboard Widget
  * Description: Custom Elementor Widget to display tableau dashboard dynamically.
- * Version:     1.0.0
+ * Version:     1.0.1
  * Author:      Ming Sheng Choo
  * Author URI:  https://github.com/MingSheng92
  */
@@ -107,6 +107,49 @@ class Dashboard_Widget extends Widget_Base {
 			]
 		);
 
+		// end section for content 
+		$this->end_controls_section();
+
+		// start a new style tab
+		$this->start_controls_section(
+			'style_section',
+			[
+				'label' => __( 'Dashboard', self::$slug ),
+				'tab' => \Elementor\Controls_Manager::TAB_STYLE,
+			]
+		);
+
+		$this->add_control(
+			'title_color',
+			[
+				'label' => __( 'Tab\'s Title Color', 'plugin-domain' ),
+				'type' => \Elementor\Controls_Manager::COLOR,
+				'scheme' => [
+					'type' => \Elementor\Scheme_Color::get_type(),
+					'value' => \Elementor\Scheme_Color::COLOR_1,
+				],
+				'selectors' => [
+					'{{WRAPPER}} .title' => 'color: {{VALUE}}',
+				],
+			]
+		);
+
+		$this->add_control(
+			'content_color',
+			[
+				'label' => __( 'Tab\'s Content Color', 'plugin-domain' ),
+				'type' => \Elementor\Controls_Manager::COLOR,
+				'scheme' => [
+					'type' => \Elementor\Scheme_Color::get_type(),
+					'value' => \Elementor\Scheme_Color::COLOR_1,
+				],
+				'selectors' => [
+					'{{WRAPPER}} .title' => 'color: {{VALUE}}',
+				],
+			]
+		);
+		
+		// end section for content 
 		$this->end_controls_section();
 	}
 
@@ -114,22 +157,24 @@ class Dashboard_Widget extends Widget_Base {
         // select the control in _register_controls()
 		$dashboards = $this->get_settings_for_display('dashboards_Settings');
 
+		// select the control style settings
+		$settings = $this->get_settings_for_display();
+
         // generate tabs for tableau dashboards
         echo "<div class='tab'>";
 		foreach ($dashboards as $dashboard_item) {
             if ($dashboard_item['dashboard_default'] == 'yes') {
-                //onclick='createViz(event, {$dashboard_item['dashboard_url']['url']}, {$dashboard_item['dashboard_narr']});'
-                echo "<button id='defaultDashboard' class='tablinks' onclick='createViz(event, ".json_encode($dashboard_item['dashboard_url']['url']).", ".json_encode($dashboard_item['dashboard_narr'])." );'>{$dashboard_item['dashboard_name']}</button>";
-            }
+				echo "<button id='defaultDashboard' class='tablinks' style='color : ".$settings['title_color']."' onclick='createViz(event, ".json_encode($dashboard_item['dashboard_url']['url']).", ".json_encode($dashboard_item['dashboard_narr'])." );'>{$dashboard_item['dashboard_name']}</button>";
+			}
             else {
-                echo "<button class='tablinks' onclick='createViz(event, ".json_encode($dashboard_item['dashboard_url']['url']).", ".json_encode($dashboard_item['dashboard_narr'])." );'>{$dashboard_item['dashboard_name']}</button>";
+                echo "<button class='tablinks' style='color : ".$settings['title_color']."' onclick='createViz(event, ".json_encode($dashboard_item['dashboard_url']['url']).", ".json_encode($dashboard_item['dashboard_narr'])." );'>{$dashboard_item['dashboard_name']}</button>";
             }
 		}
         echo "</div>";
 
         // generate content for tabs 
         echo "<div class='tabcontent'>";
-        echo "<p id='narrative'></p>";
+        echo "<p id='narrative' style='color : ".$settings['content_color']."'></p>";
         echo "<div id='vizContainer'></div>";
         echo "</div>";
 

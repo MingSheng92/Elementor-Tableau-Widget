@@ -1,6 +1,6 @@
-## Tableau Dashboard Tab Custom Widget
+# Tableau Dashboard Tab Custom Widget
 
-#### Background
+## Background
 
 In Elementor there is a widget that allows the user to switch between tabs to view different content. This is very useful to diplay multiple contents, however, there are some issues with the way that Tableau embeds are loaded in these tabs:
 
@@ -8,7 +8,7 @@ In Elementor there is a widget that allows the user to switch between tabs to vi
 2. if all dashboards is loaded at once in tabs manner, the layout of other dashboard will not be set properly.
 3. due to container size, embedded code will sometimes render mobile version of the dashbords in desktop screen size.
 
-#### Solution 
+## Solution 
 
 Stumbled upon tableau blog post where the official recommendation where it stated <b>"only very simple embedding scenarios should use the embed code. Most deployments should instead use the JavaScript API."</b> 
 
@@ -16,13 +16,13 @@ The overall widget design is fairly straight forward, we will create a widget th
 
 We will use Tableau Javascript API to perform the dynamic loading, 
 
-##### Language used:
+### Language used:
 PHP, javascript (Tableau Javascript API, html javscript for user event), html, css 
 
-#### Controls
+## Controls
 
 
-#### Installation Guide
+## Installation Guide
 
 
 

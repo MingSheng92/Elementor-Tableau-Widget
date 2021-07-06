@@ -21,10 +21,12 @@ PHP, javascript (Tableau Javascript API, html javscript for user event), html, c
 
 ## Controls
 
+Below image shows the current configuration that can be performed with the widget.
+![Figure1](https://github.com/MingSheng92/Elementor-Tableau-Widget/blob/main/images/widget_dashboard.JPG)
 
 ## Installation Guide
-
-
-
+1. unzip the zip file and copy to the plugins folder, the same folder where you can find elementor: ( wordpress\wordpress\wp-content\plugins) 
+2. Login to wordpress and activate the plugin
+3. Once activated, you should be able to find the widget in elementor's GENERAL tab
 
 https://tableau.github.io/embedding-playbook/pages/01_embedding_and_jsapi

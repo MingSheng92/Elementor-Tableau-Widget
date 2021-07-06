@@ -27,7 +27,8 @@ PHP, javascript (Tableau Javascript API, html javscript for user event), html, c
 3. content_template implemented to support elementor live editing feature.
 
 #### v 1.0.0
-Added dashboard configuration
+1. Direct port from the base html source code
+2. Added basic widget controls
 
 ## Controls
 

@@ -6,7 +6,7 @@ In Elementor there is a widget that allows the user to switch between tabs to vi
 
 1. In tabs widget, all the content will be loaded altogether and only display the selected tab. Hence this will have impact on website's performance.
 2. if all dashboards is loaded at once in tabs manner, the layout of other dashboard will not be set properly.
-3. due to container size, embedded code will sometimes render mobile version of the dashbords in desktop screen size.
+3. due to container size, default embedded code will sometimes render mobile version of the dashbords in desktop screen size.
 
 ## Solution 
 

@@ -1,45 +1,15 @@
+@charset "UTF-8";
+
 /* Style the tab */
-.tab {
+.custom-tabs-wrapper {
+  position: -webkit-sticky;
+  position: sticky;
   overflow: auto;
   white-space: nowrap;
   top: 0;
-  z-index: 1;
-  border-bottom: 2px solid #E7F1FF;
-  border-radius: 5px 10px 0px 0px;
 }
 
-/* Style the buttons inside the tab color: #110848; */
-.tablinks {
-  line-height: 1;
-  border-radius: 5px 5px 0px 0px;
-  border: solid #fff;
-  border-width: 2px 2px 0px 0px;
-  padding: 10px 35px;
-  transition: 0.3s;
-  font-size: 17px;
-}
-
-/* Change background color of buttons on hover */
-.tab button:hover {
-  background-color: rgb(9 105 250 / 10%);
-}
-
-/* Create an active/current tablink class */
-.tab button.active {
-  color: #018eff;
-}
-
-/* select visualization with Id selector */
-#vizContainer {
-  min-width:250px; 
-  max-width:1400px; 
-  height: auto;
-}
-
-/* Style the tab content */
 .tabcontent {
-    padding: 30px 30px;
-    border: 2px solid #E7F1FF;
-    border-top: none;
-    min-height: 1000px;
+  border: 1px!important;
+  border-color: black!important;
 }

@@ -24,7 +24,8 @@ PHP, javascript (Tableau Javascript API, html javscript for user event), html, c
 Below image shows the current configuration that can be performed with the widget.
 ![Figure1](https://github.com/MingSheng92/Elementor-Tableau-Widget/blob/main/images/widget_dashboard.JPG)
 
-Sample Result:
+## Sample Result:
+
 Note: custom widget width is based on the theme container width (Just like any other widgets).
 ![Figure2](https://github.com/MingSheng92/Elementor-Tableau-Widget/blob/main/images/Demo.JPG)
 

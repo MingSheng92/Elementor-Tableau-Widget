@@ -12,12 +12,22 @@ In Elementor there is a widget that allows the user to switch between tabs to vi
 
 Stumbled upon tableau blog post where the official recommendation where it stated <b>"only very simple embedding scenarios should use the embed code. Most deployments should instead use the JavaScript API."</b> 
 
-The overall widget design is fairly straight forward, we will create a widget that can dynamic load any amount of dashboards that is added into the widget and only loads dashboards that is selected by the user and nothing more. By creating a custom widget, we will be able to increase work effeciency and anyone can work with this widget without any knowledge to html/css or even javascript. With dynamic loading, we increase the site loading speed as it will load only one dashboard as compared to all dashboards with the original embedded approach. 
-
-We will use Tableau Javascript API to perform the dynamic loading, 
+The overall widget design is fairly straight forward, we will create a widget that can dynamic load any amount of dashboards that is added into the widget and only loads dashboards that is selected by the user and nothing more. With dynamic loading, we increase the site loading speed as it will load only one dashboard as compared to all dashboards with the original embedded approach. 
 
 ### Language used:
 PHP, javascript (Tableau Javascript API, html javscript for user event), html, css 
+
+## Change Log
+
+### Whats new 
+
+#### v 1.0.1
+1. UI change and cleanup (removed default dashboards settings and set the 1st tab to always the default, change into textarea for narratives) 
+2. Style controller tab implemented
+3. content_template implemented to support elementor live editing feature.
+
+#### v 1.0.0
+Added dashboard configuration
 
 ## Controls
 

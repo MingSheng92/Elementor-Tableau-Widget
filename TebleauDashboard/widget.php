@@ -2,9 +2,10 @@
 /**
  * Plugin Name: Elementor Tableau Dashboard Widget
  * Description: Custom Elementor Widget to display tableau dashboard dynamically.
- * Version:     1.0.1
+ * Version:     1.0.2
  * Author:      Ming Sheng Choo
  * Author URI:  https://github.com/MingSheng92
+ * package URI: https://github.com/MingSheng92/Elementor-Tableau-Widget
  */
 namespace Solid_Dashboard;
 
@@ -18,8 +19,9 @@ class Dashboard_Widget extends Widget_Base {
 	public function __construct($data = [], $args = null) {
 		parent::__construct($data, $args);
 		
-		// uncomment if we have dependencies on any javscript libraries later
-		//wp_register_script( 'script-handle', 'path/to/file.js', [ 'elementor-frontend' ], '1.0.0', true );
+		// include tableau cdn script for dynamic loading
+		wp_register_script( 'tableau', 'https://public.tableau.com/javascripts/api/tableau-2.8.0.min.js', null, null, true );
+		wp_enqueue_script('tableau');
 
 		// add our css file here 
 		wp_register_style( 'style-handle', '/wp-content/plugins/TebleauDashboard/css/dWidget.css');
@@ -372,9 +374,6 @@ class Dashboard_Widget extends Widget_Base {
 			<p id="narrative" class="custom-tab-text" ></p>
 			<div id="vizContainer" class="custom-tab-dashboard"></div>
         </div>
-		
-		<!-- Inject Tableau Javascript API  -->
-		<script type='text/javascript' src='https://public.tableau.com/javascripts/api/tableau-2.8.0.min.js'></script>
 
 		<!-- Adding custom Javascript -->
 		<script>
@@ -450,10 +449,7 @@ class Dashboard_Widget extends Widget_Base {
 					<# }}); #>
 				</div>	
 			<# } #>
-		</div>				
-
-		<!-- Inject Tableau Javascript API  -->
-		<script type='text/javascript' src='https://public.tableau.com/javascripts/api/tableau-2.8.0.min.js'></script>
+		</div>
 
 		<!-- generate content for tabs -->
 		<div class="custom-tab-content">

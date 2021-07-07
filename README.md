@@ -21,6 +21,9 @@ PHP, javascript (Tableau Javascript API, html javscript for user event), html, c
 
 ### Whats new 
 
+#### v 1.0.2
+Removed script injection and replaced with wordpress's wp_enqueue_script for cdn script loading.
+
 #### v 1.0.1
 1. UI change and cleanup (removed default dashboards settings and set the 1st tab to always the default, change into textarea for narratives) 
 2. Style controller tab implemented

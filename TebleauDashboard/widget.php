@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Elementor Tableau Dashboard Widget
  * Description: Custom Elementor Widget to display tableau dashboard dynamically.
- * Version:     1.0.2
+ * Version:     1.0.3
  * Author:      Ming Sheng Choo
  * Author URI:  https://github.com/MingSheng92
  * package URI: https://github.com/MingSheng92/Elementor-Tableau-Widget
@@ -196,9 +196,21 @@ class Dashboard_Widget extends Widget_Base {
 		);
 
 		$this->add_control(
+			'Tab_border',
+			[
+				'label' => __( 'Tab border', 'plugin-domain' ),
+				'type' => \Elementor\Controls_Manager::DIMENSIONS,
+				'size_units' => [ 'px', '%', 'em' ],
+				'selectors' => [
+					'{{WRAPPER}} .custom-tab-title' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+
+		$this->add_control(
 			'tab_color',
 			[
-				'label' => __( 'Color', 'elementor' ),
+				'label' => __( 'Font Color', 'elementor' ),
 				'type' => \Elementor\Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .custom-tab-title' => 'color: {{VALUE}};',
@@ -221,7 +233,18 @@ class Dashboard_Widget extends Widget_Base {
 			]
 		);
 
-		/* WIP, bug - border not showing
+		$this->add_control(
+			'hover_color',
+			[
+				'label' => __( 'onHover Color', 'elementor' ),
+				'type' => \Elementor\Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .custom-tab-title:hover' => 'background-color: {{VALUE}};',
+				],
+			]
+		);
+
+		/* WIP
 		$this->add_control(
 			'tab_active_color',
 			[
@@ -322,7 +345,7 @@ class Dashboard_Widget extends Widget_Base {
 		$id_int = substr( $this->get_id_int(), 0, 3 );
 		?>
 		<div class="custom-tabs" role="tablist">
-			<div class="custom-tabs-wrapper">
+			<!--<div class="custom-tabs-wrapper">-->
 				<?php foreach ($tabs as $index => $item) :
 					$tab_count = $index + 1;
 					$tab_title_setting_key = $this->get_repeater_setting_key('tab_title', 'tabs', $index);
@@ -352,7 +375,7 @@ class Dashboard_Widget extends Widget_Base {
 						<?php echo $item['tab_title'] ?>
 					</button>
 				<?php endforeach ?>
-			</div>
+			<!--</div>-->
 		</div>
 
 		<?php 
@@ -416,7 +439,7 @@ class Dashboard_Widget extends Widget_Base {
 			if (settings.tabs) {
 				var tabindex = view.getIDInt().toString().substr( 0, 3 );
 				#>
-				<div class="custom-tabs-wrapper">
+				<!--<div class="custom-tabs-wrapper">-->
 					<#
 					_.each(settings.tabs, function (item, index) {
 						var tabCount = index + 1;
@@ -447,7 +470,7 @@ class Dashboard_Widget extends Widget_Base {
 							{{ item.tab_title }}
 						</button>
 					<# }}); #>
-				</div>	
+				<!--</div>-->	
 			<# } #>
 		</div>
 

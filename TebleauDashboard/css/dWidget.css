@@ -1,15 +1,20 @@
 @charset "UTF-8";
 
-/* Style the tab */
-.custom-tabs-wrapper {
+/* Style the tab 
   position: -webkit-sticky;
   position: sticky;
+  add in custom CSS if needed
+*/
+.custom-tabs {
   overflow: auto;
   white-space: nowrap;
   top: 0;
 }
 
-.tabcontent {
-  border: 1px!important;
-  border-color: black!important;
+.custom-tab-title {
+  transition: 0.3s;
+}
+
+.custom-tab-content {
+  border-style: solid;
 }

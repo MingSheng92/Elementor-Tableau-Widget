@@ -22,8 +22,8 @@ PHP, javascript (Tableau Javascript API, html javscript for user event), html, c
 ### Whats new 
 
 #### v 1.0.3
-Added more styling optiions for tab.
-Bug ID #1 fix
+1. Added more styling optiions for tab. 
+2. Bug ID #1 fix
 
 #### v 1.0.2
 Removed script injection and replaced with wordpress's wp_enqueue_script for cdn script loading.

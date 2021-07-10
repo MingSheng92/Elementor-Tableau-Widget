@@ -9,10 +9,11 @@
   overflow: auto;
   white-space: nowrap;
   top: 0;
+  display: flex;
 }
 
 .custom-tab-title {
-  transition: 0.3s;
+  margin: auto 0.1em;
 }
 
 .custom-tab-content {

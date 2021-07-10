@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Elementor Tableau Dashboard Widget
  * Description: Custom Elementor Widget to display tableau dashboard dynamically.
- * Version:     1.0.3
+ * Version:     1.0.4
  * Author:      Ming Sheng Choo
  * Author URI:  https://github.com/MingSheng92
  * package URI: https://github.com/MingSheng92/Elementor-Tableau-Widget
@@ -70,7 +70,7 @@ class Dashboard_Widget extends Widget_Base {
 		$repeater->add_control(
 			'tab_content',
 			[
-				'label' => __( "Dashboard's content", self::$slug ),
+				'label' => esc_html__( "Dashboard's content", self::$slug ),
 				'type' => \Elementor\Controls_Manager::TEXTAREA,
 				'rows' => 10,
 				'default' => __( "The Dashboard's narrative", self::$slug ),
@@ -105,8 +105,6 @@ class Dashboard_Widget extends Widget_Base {
 			]
 		);
 
-
-		/* WIP
 		$this->add_responsive_control(
 			'content_align',
 			[
@@ -125,12 +123,17 @@ class Dashboard_Widget extends Widget_Base {
 						'title' => __( 'Right', 'plugin-name' ),
 						'icon' => 'fa fa-align-right',
 					],
+					'space-evenly' => [
+						'title' => __( 'Justified', 'plugin-name' ),
+						'icon' => 'fa fa-align-justify',
+					]
 				],
 				'default' => 'left',
-				'prefix_class' => 'content-align-%s',
+				'selectors' => [
+					'{{WRAPPER}} .custom-tabs' => 'justify-content: {{VALUE}};',
+				],
 			]
 		);
-		*/
 
 		$this-> add_control(
 			'view',
@@ -203,6 +206,18 @@ class Dashboard_Widget extends Widget_Base {
 				'size_units' => [ 'px', '%', 'em' ],
 				'selectors' => [
 					'{{WRAPPER}} .custom-tab-title' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+	
+		$this->add_control(
+			'Tab_padding',
+			[
+				'label' => __( 'Tab padding', 'plugin-domain' ),
+				'type' => \Elementor\Controls_Manager::DIMENSIONS,
+				'size_units' => [ 'px', '%', 'em' ],
+				'selectors' => [
+					'{{WRAPPER}} .custom-tab-title' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				],
 			]
 		);

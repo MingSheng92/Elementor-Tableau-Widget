@@ -21,8 +21,13 @@ PHP, javascript (Tableau Javascript API, html javscript for user event), html, c
 
 ### Whats new 
 
+#### v 1.0.4
+1. Added alignment configuration 
+2. Padding configuration for tab title
+3. file clean up 
+
 #### v 1.0.3
-1. Added more styling optiions for tab. 
+1. Added more styling options for tab. 
 2. Bug ID #1 fix
 
 #### v 1.0.2

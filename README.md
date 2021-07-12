@@ -68,7 +68,7 @@ Tested both options.
 
 ## Additional Notes: 
 
-1. For now this widget is meant for one per page due to some JQuery and Tableau Javascript complication. () 
+1. For now this widget is meant for one per page due to some JQuery and Tableau Javascript complication.
 2. Sticky option should be added from custom CSS. 
 
 ## Reference: 

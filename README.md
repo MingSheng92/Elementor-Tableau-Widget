@@ -53,8 +53,25 @@ Note: custom widget width is based on the theme container width (Just like any o
 ![Figure2](https://github.com/MingSheng92/Elementor-Tableau-Widget/blob/main/images/Demo.JPG)
 
 ## Installation Guide
+
+### Option 1
 1. Clone the repo, copy TebleauDashboard folder and paste into the plugins folder, the same folder where you can find elementor: ( wordpress\wordpress\wp-content\plugins) 
 2. Login to wordpress and activate the plugin
 3. Once activated, you should be able to find the widget in elementor's GENERAL tab
 
-https://tableau.github.io/embedding-playbook/pages/01_embedding_and_jsapi
+### Option 2 
+1. Clone the repo, zip the folder TableauDashboard with any compress tool (E.g 7zip)
+2. Log in to wordpress -> plugins -> Add New -> Upload (Select the zipped TableauDashboard Folder) 
+3. Select Install and activate the plugin 
+
+Tested both options.
+
+## Additional Notes: 
+
+1. For now this widget is meant for one per page due to some JQuery and Tableau Javascript complication. () 
+2. Sticky option should be added from custom CSS. 
+
+## Reference: 
+https://tableau.github.io/embedding-playbook/pages/01_embedding_and_jsapi <br />
+https://developers.elementor.com/creating-a-new-widget/ <br />
+https://developer.wordpress.org/plugins/ <br />

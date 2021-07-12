@@ -108,23 +108,23 @@ class Dashboard_Widget extends Widget_Base {
 		$this->add_responsive_control(
 			'content_align',
 			[
-				'label' => __( 'Alignment', 'plugin-name' ),
+				'label' => __( 'Alignment',  self::$slug ),
 				'type' => \Elementor\Controls_Manager::CHOOSE,
 				'options' => [
 					'left' => [
-						'title' => __( 'Left', 'plugin-name' ),
+						'title' => __( 'Left',  self::$slug ),
 						'icon' => 'fa fa-align-left',
 					],
 					'center' => [
-						'title' => __( 'Center', 'plugin-name' ),
+						'title' => __( 'Center', self::$slug ),
 						'icon' => 'fa fa-align-center',
 					],
 					'right' => [
-						'title' => __( 'Right', 'plugin-name' ),
+						'title' => __( 'Right', self::$slug ),
 						'icon' => 'fa fa-align-right',
 					],
 					'space-evenly' => [
-						'title' => __( 'Justified', 'plugin-name' ),
+						'title' => __( 'Justified', self::$slug ),
 						'icon' => 'fa fa-align-justify',
 					]
 				],
@@ -158,7 +158,7 @@ class Dashboard_Widget extends Widget_Base {
 		$this->add_control(
 			'border_width',
 			[
-				'label' => __( 'Border Width', 'elementor' ),
+				'label' => __( 'Border Width', self::$slug ),
 				'type' => \Elementor\Controls_Manager::SLIDER,
 				'default' => [
 					'size' => 1,
@@ -178,7 +178,7 @@ class Dashboard_Widget extends Widget_Base {
 		$this->add_control(
 			'border_color',
 			[
-				'label' => __( 'Border Color', 'elementor' ),
+				'label' => __( 'Border Color', self::$slug ),
 				'type' => \Elementor\Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .custom-tab-title, {{WRAPPER}} .custom-tab-title:before, {{WRAPPER}} .custom-tab-title:after, {{WRAPPER}} .custom-tab-content' => 'border-color: {{VALUE}};',
@@ -192,7 +192,7 @@ class Dashboard_Widget extends Widget_Base {
 		$this->add_control(
 			'heading_title',
 			[
-				'label' => __( 'Tab', 'elementor' ),
+				'label' => __( 'Tab', self::$slug ),
 				'type' => \Elementor\Controls_Manager::HEADING,
 				'separator' => 'before',
 			]
@@ -201,7 +201,7 @@ class Dashboard_Widget extends Widget_Base {
 		$this->add_control(
 			'Tab_border',
 			[
-				'label' => __( 'Tab border', 'plugin-domain' ),
+				'label' => __( 'Tab border', self::$slug ),
 				'type' => \Elementor\Controls_Manager::DIMENSIONS,
 				'size_units' => [ 'px', '%', 'em' ],
 				'selectors' => [
@@ -213,7 +213,7 @@ class Dashboard_Widget extends Widget_Base {
 		$this->add_control(
 			'Tab_padding',
 			[
-				'label' => __( 'Tab padding', 'plugin-domain' ),
+				'label' => __( 'Tab padding', self::$slug ),
 				'type' => \Elementor\Controls_Manager::DIMENSIONS,
 				'size_units' => [ 'px', '%', 'em' ],
 				'selectors' => [
@@ -225,7 +225,7 @@ class Dashboard_Widget extends Widget_Base {
 		$this->add_control(
 			'tab_color',
 			[
-				'label' => __( 'Font Color', 'elementor' ),
+				'label' => __( 'Font Color', self::$slug ),
 				'type' => \Elementor\Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .custom-tab-title' => 'color: {{VALUE}};',
@@ -240,7 +240,7 @@ class Dashboard_Widget extends Widget_Base {
 		$this->add_control(
 			'background_color',
 			[
-				'label' => __( 'Background Color', 'elementor' ),
+				'label' => __( 'Background Color', self::$slug ),
 				'type' => \Elementor\Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .custom-tab-title' => 'background-color: {{VALUE}};',
@@ -300,7 +300,7 @@ class Dashboard_Widget extends Widget_Base {
 		$this->add_control(
 			'margin',
 			[
-				'label' => __( 'Text Margin', 'plugin-domain' ),
+				'label' => __( 'Text Margin', self::$slug ),
 				'type' => \Elementor\Controls_Manager::DIMENSIONS,
 				'size_units' => [ 'px', '%', 'em' ],
 				'selectors' => [
@@ -313,7 +313,7 @@ class Dashboard_Widget extends Widget_Base {
 		$this->add_control(
 			'content_color',
 			[
-				'label' => __( 'Font color', 'elementor' ),
+				'label' => __( 'Font color', self::$slug ),
 				'type' => \Elementor\Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .custom-tab-text' => 'color: {{VALUE}};',

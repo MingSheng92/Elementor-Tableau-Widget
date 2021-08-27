@@ -1,21 +1,180 @@
 @charset "UTF-8";
 
-/* Style the tab 
-  position: -webkit-sticky;
-  position: sticky;
-  add in custom CSS if needed
-*/
 .custom-tabs {
-  overflow: auto;
-  white-space: nowrap;
-  top: 0;
-  display: flex;
+	top: min(0.6250em, 10px);
+	overflow: auto;
+	white-space: nowrap;
+	margin: auto;
+	display: flex;
+	border-radius: 5px;
+  	justify-content: center;
+  	justify-content: center;
+	background: #FFFFFF;
+	box-shadow: 0px 10px 20px rgba(9, 105, 250, 0.15);
 }
 
-.custom-tab-title {
-  margin: auto 0.1em;
+.custom-tab-container {
+  	display: table;
+	margin: min(0.9375em, 15px);
+	min-width: 120px;
+	max-width: 250px;
+	border-radius: 100px;
+	padding: min(0.9375em, 15px);
+	cursor: pointer;
+	transition: 0.3s;
+}
+
+.custom-tab-container.active {
+	background: #E7F1FF;
+}
+
+.custom-tab-item {
+	display: table-cell;
+	vertical-align: middle;
+  	font-size: 12px;
+	font-weight: 600;
+	text-transform: uppercase;
+}
+
+.custom-tab-item.num {
+	padding-left: 0.3125em;
+	padding-right: 0.3125em;
+	text-align: center;
+	font-style: normal;
+	font-weight: bold;
+	font-size: 18px;
+	line-height: 110%;
+	color: #5397FC;
 }
 
 .custom-tab-content {
-  border-style: solid;
+	border-style: solid;
+}
+
+/* carousel style menu for mobile */
+.custom-mobile-container {
+	/*position: sticky;*/
+	top: min(0.6250em, 10px);
+}
+
+.custom-mobile-tab {
+	min-height: 90px;
+	position: relative;
+	margin: auto;
+	display: flex;
+	border-radius: 5px;
+    justify-content: center;
+    justify-content: center;
+	background: #FFFFFF;
+	box-shadow: 0px 10px 20px rgba(9, 105, 250, 0.15);
+}
+
+.custom-mobile-tab > .itab-container {
+	display: none;
+}
+
+
+.itab-container {
+	display: table;
+	margin: 0.9375em auto 0.9375em auto;
+	padding: 0.9375em 1.5em 0.9375em 1.5em;
+	cursor: pointer;
+}
+
+.custom-mobile-tab.active {
+	background: #E7F1FF;
+}
+
+.custom-mobile-tab-item {
+	color: #082753;
+	display: table-cell;
+	vertical-align: middle;
+    font-size: 12px;
+	font-weight: 600;
+	text-transform: uppercase;
+}
+
+.custom-mobile-tab-item.num {
+	padding-left: 0.3125em;
+	padding-right: 0.3125em;
+	text-align: center;
+	font-style: normal;
+	font-weight: bold;
+	font-size: 18px;
+	line-height: 110%;
+	color: #5397FC;
+}
+
+/* Next & previous buttons */
+.prev, .next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  padding: 16px;
+  margin-top: -30px;
+  color: #0969FA;
+  font-weight: bold;
+  font-size: 18px;
+  transition: 0.6s ease;
+  border-radius: 0 3px 3px 0;
+  user-select: none;
+}
+
+/* Position the "next button" to the right */
+.next {
+  right: 0;
+  border-radius: 3px 0 0 3px;
+}
+
+/* Position the "prev button" to the right */
+.prev {
+  left: 0;
+}
+
+/* On hover, add a black background color with a little bit see-through */
+.prev:hover, .next:hover {
+  background-color: rgba(231,241,255,1);
+}
+
+
+/* Fading animation */
+.fade {
+  -webkit-animation-name: fade;
+  -webkit-animation-duration: 1.5s;
+  animation-name: fade;
+  animation-duration: 1.5s;
+}
+
+@-webkit-keyframes fade {
+  from {opacity: .4} 
+  to {opacity: 1}
+}
+
+@keyframes fade {
+  from {opacity: .4} 
+  to {opacity: 1}
+}
+
+
+@media only screen and (min-width: 768px) {
+	/* For Desktop: */
+	.custom-mobile-container {
+		display: none;
+	}
+	
+	.custom-tabs {
+		display: flex;
+	}
+}
+
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */ 
+	.custom-mobile-container {
+		display: block;
+	}
+	
+	.custom-tabs {
+		display: none;
+	}
 }

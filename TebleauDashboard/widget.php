@@ -1,12 +1,4 @@
 <?php
-/**
- * Plugin Name: Elementor Tableau Dashboard Widget
- * Description: Custom Elementor Widget to display tableau dashboard dynamically.
- * Version:     1.0.4
- * Author:      Ming Sheng Choo
- * Author URI:  https://github.com/MingSheng92
- * package URI: https://github.com/MingSheng92/Elementor-Tableau-Widget
- */
 namespace Solid_Dashboard;
 
 use Elementor\Repeater;
@@ -20,7 +12,7 @@ class Dashboard_Widget extends Widget_Base {
 		parent::__construct($data, $args);
 		
 		// include tableau cdn script for dynamic loading
-		wp_register_script( 'tableau', 'https://public.tableau.com/javascripts/api/tableau-2.8.0.min.js', null, null, true );
+		wp_register_script( 'tableau', 'https://public.tableau.com/javascripts/api/tableau-2.8.0.min.js', null, null, false );
 		wp_enqueue_script('tableau');
 
 		// add our css file here 
@@ -105,6 +97,7 @@ class Dashboard_Widget extends Widget_Base {
 			]
 		);
 
+		/*
 		$this->add_responsive_control(
 			'content_align',
 			[
@@ -134,6 +127,23 @@ class Dashboard_Widget extends Widget_Base {
 				],
 			]
 		);
+		*/
+
+		$this->add_control(
+			'tabs_position',
+			[
+				'label' => __( 'Tabs Position', self::$slug ),
+				'type' => \Elementor\Controls_Manager::SELECT,
+				'default' => 'static',
+				'options' => [
+					'static'  => __( 'Static', self::$slug ),
+					'sticky' => __( 'Sticky', self::$slug ),
+				],
+				'selectors' => [
+					'{{WRAPPER}} .custom-tabs, {{WRAPPER}} .custom-mobile-container' => 'position: {{VALUE}};',
+				],
+			]
+		);		
 
 		$this-> add_control(
 			'view',
@@ -170,7 +180,7 @@ class Dashboard_Widget extends Widget_Base {
 					],
 				],
 				'selectors' => [
-					'{{WRAPPER}} .custom-tab-title, {{WRAPPER}} .custom-tab-title:before, {{WRAPPER}} .custom-tab-title:after, {{WRAPPER}} .custom-tab-content' => 'border-width: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .custom-tab-content' => 'border-width: {{SIZE}}{{UNIT}};',
 				],
 			]
 		);
@@ -181,7 +191,7 @@ class Dashboard_Widget extends Widget_Base {
 				'label' => __( 'Border Color', self::$slug ),
 				'type' => \Elementor\Controls_Manager::COLOR,
 				'selectors' => [
-					'{{WRAPPER}} .custom-tab-title, {{WRAPPER}} .custom-tab-title:before, {{WRAPPER}} .custom-tab-title:after, {{WRAPPER}} .custom-tab-content' => 'border-color: {{VALUE}};',
+					'{{WRAPPER}} .custom-tab-content' => 'border-color: {{VALUE}};',
 				],
 			]
 		);
@@ -198,6 +208,8 @@ class Dashboard_Widget extends Widget_Base {
 			]
 		);
 
+		/* Remove the customization control for the following as to follow figma template
+		Add back if needed
 		$this->add_control(
 			'Tab_border',
 			[
@@ -209,6 +221,7 @@ class Dashboard_Widget extends Widget_Base {
 				],
 			]
 		);
+
 	
 		$this->add_control(
 			'Tab_padding',
@@ -223,21 +236,6 @@ class Dashboard_Widget extends Widget_Base {
 		);
 
 		$this->add_control(
-			'tab_color',
-			[
-				'label' => __( 'Font Color', self::$slug ),
-				'type' => \Elementor\Controls_Manager::COLOR,
-				'selectors' => [
-					'{{WRAPPER}} .custom-tab-title' => 'color: {{VALUE}};',
-				],
-				'scheme' => [
-					'type' => \Elementor\Scheme_Color::get_type(),
-					'value' => \Elementor\Scheme_Color::COLOR_1,
-				],
-			]
-		);
-
-		$this->add_control(
 			'background_color',
 			[
 				'label' => __( 'Background Color', self::$slug ),
@@ -246,20 +244,8 @@ class Dashboard_Widget extends Widget_Base {
 					'{{WRAPPER}} .custom-tab-title' => 'background-color: {{VALUE}};',
 				],
 			]
-		);
-
-		$this->add_control(
-			'hover_color',
-			[
-				'label' => __( 'onHover Color', 'elementor' ),
-				'type' => \Elementor\Controls_Manager::COLOR,
-				'selectors' => [
-					'{{WRAPPER}} .custom-tab-title:hover' => 'background-color: {{VALUE}};',
-				],
-			]
-		);
-
-		/* WIP
+		);		
+		
 		$this->add_control(
 			'tab_active_color',
 			[
@@ -273,17 +259,44 @@ class Dashboard_Widget extends Widget_Base {
 					'value' => \Elementor\Scheme_Color::COLOR_4,
 				],
 			]
-		);*/
+		);		
+
+		$this->add_control(
+			'font_color',
+			[
+				'label' => __( 'Font Color', self::$slug ),
+				'type' => \Elementor\Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .custom-tab-title' => 'color: {{VALUE}};',
+				],
+				'scheme' => [
+					'type' => \Elementor\Scheme_Color::get_type(),
+					'value' => \Elementor\Scheme_Color::COLOR_1,
+				],
+			]
+		);
+		*/
+
+		$this->add_control(
+			'hover_color',
+			[
+				'label' => __( 'onHover Color', 'elementor' ),
+				'type' => \Elementor\Controls_Manager::COLOR,
+				'default' => '#B6D3FE',
+				'selectors' => [
+					'{{WRAPPER}} .custom-tab-container:hover' => 'background-color: {{VALUE}};',
+				],
+			]
+		);
 
 		$this->add_group_control(
 			\Elementor\Group_Control_Typography::get_type(),
 			[
 				'name' => 'tab_typography',
-				'selector' => '{{WRAPPER}} .custom-tab-title',
+				'selector' => '{{WRAPPER}} .custom-tab-item',
 				'scheme' => \Elementor\Scheme_Typography::TYPOGRAPHY_1,
 			]
 		);
-
 
 		/* **********************************************************
 		* STYLE Section for Tab Content
@@ -308,7 +321,6 @@ class Dashboard_Widget extends Widget_Base {
 				],
 			]
 		);
-
 
 		$this->add_control(
 			'content_color',
@@ -356,41 +368,82 @@ class Dashboard_Widget extends Widget_Base {
 	*/
 	protected function render() {
 		$tabs = $this->get_settings( 'tabs' );
-
+		
 		$id_int = substr( $this->get_id_int(), 0, 3 );
 		?>
-		<div class="custom-tabs" role="tablist">
-			<!--<div class="custom-tabs-wrapper">-->
+
+		<!-- Navigation tab for mobile -->
+		<div class="custom-mobile-container">
+			<div class="custom-mobile-tab">
 				<?php foreach ($tabs as $index => $item) :
 					$tab_count = $index + 1;
-					$tab_title_setting_key = $this->get_repeater_setting_key('tab_title', 'tabs', $index);
-
-					//'id' => 'custom-tab-title-'. $id_int . $tab_count,
-					$ttl_attr = [
-						'class' => ['custom-tab-title', 'tablinks'],
-						'data-tab' => $tab_count,
-						'tabindex' => $id_int . $tab_count,
-						'role' => 'tab',
-						'aria-controls' => 'custom-tab-content-' . $id_int . $tab_count,
-					];
-
-					// set default id to default dahsboard set by user
-					if ($tab_count == 1) {
-						$ttl_attr = ['id' => 'defaultDashboard'] + $ttl_attr;
-					}
-
-					$this->add_render_attribute( $tab_title_setting_key,  $ttl_attr);
 				?>
-					<button 
-						<?php 
-							echo $this->get_render_attribute_string( $tab_title_setting_key ); 
-						?>
-						onclick="createViz(event, '<?php echo $item['tab_url']['url'] ?>', '<?php echo $item['tab_content'] ?>');"
+					<div 
+						class = 'itab-container fade'
+						id = "itab-container-<?php echo $tab_count ?>"
+						data-tab = "<?php echo$tab_count ?>"
+						tabindex = "<?php echo $id_int . $tab_count ?>"
+						role = 'mobile-tab'
+						aria-control = "itab-container-<?php echo $id_int . $tab_count ?>"
+						data-url="<?php echo $item['tab_url']['url'] ?>"
+						data-content="<?php echo $item['tab_content'] ?>"
 					>
-						<?php echo $item['tab_title'] ?>
-					</button>
+						<div class="custom-mobile-tab-item num">
+							<?php echo $tab_count?>.
+						</div>
+						<div class="custom-mobile-tab-item">
+							<?php echo $item['tab_title'] ?>
+						</div>		
+					</div>
 				<?php endforeach ?>
-			<!--</div>-->
+
+				<a class="prev" onclick="mobileVizHandler(-1)">&#10094;</a>
+				<a class="next" onclick="mobileVizHandler(1)">&#10095;</a>
+			</div>
+		</div>
+
+		<!-- Navigation tab for Desktop -->
+		<div class="custom-tabs" role="tablist">
+			<?php foreach ($tabs as $index => $item) :
+				$tab_count = $index + 1;
+
+				$tab_container_setting_key = $this->get_repeater_setting_key('tab_title', 'tabs', $index);
+
+				// reset
+				$ttl_attr = [];
+
+				//'id' => 'custom-tab-title-'. $id_int . $tab_count,
+				$ttl_attr = [
+					'class' => ['custom-tab-container'],
+					'id' => 'dashboard-'. $tab_count,
+					'data-tab' => $tab_count,
+					'tabindex' => $id_int . $tab_count,
+					'role' => 'tab',
+					'aria-controls' => 'custom-tab-containers-' . $id_int . $tab_count,
+				];
+
+				// append attribute 
+				$this->add_render_attribute( $tab_container_setting_key,  $ttl_attr);
+
+				/* back up  
+				<div <?php echo $this->get_render_attribute_string( $tab_container_setting_key ); ?>
+					onclick="createViz(event, '<?php echo $item['tab_url']['url'] ?>', '<?php echo $item['tab_content'] ?>');"
+				>
+				*/
+			?> 
+				<div <?php echo $this->get_render_attribute_string( $tab_container_setting_key ); ?>
+					data-url="<?php echo $item['tab_url']['url'] ?>"
+					data-content="<?php echo $item['tab_content'] ?>"
+					onclick="vizHandler(event, <?php echo $tab_count?>);"
+				>
+					<div class="custom-tab-item num">
+						<?php echo $tab_count?>.
+					</div>
+					<div class="custom-tab-item">
+						<?php echo $item['tab_title'] ?>
+					</div>
+				</div>
+			<?php endforeach ?>
 		</div>
 
 		<?php 
@@ -415,13 +468,61 @@ class Dashboard_Widget extends Widget_Base {
 
 		<!-- Adding custom Javascript -->
 		<script>
-            var viz;
+			// to keep track of current active mobile tab 
+            var tabIndex = 1;
+			// to keep the viz variable so that it can be 
+			// remove and recreate at anytime
+			var viz;
             
-			// simulate first click 
-			document.getElementById("defaultDashboard").click();
-            
-			function createViz(event, url, narrative) { 
-                document.getElementById("narrative").innerHTML = narrative;
+			// set first click to display the first viz in the tabs
+			document.getElementById('dashboard-' + tabIndex.toString()).click();
+
+			function mobileVizHandler(n) {
+				tabIndex += n;
+
+				var mobileTabs = document.getElementsByClassName("itab-container");
+				// reset tabindex rule
+				if (tabIndex > mobileTabs.length) { tabIndex = 1 }
+				if (tabIndex < 1) { tabIndex = mobileTabs.length }
+
+				//console.log(tabIndex);
+				// click the desktop menu 
+				document.getElementById('dashboard-' + tabIndex.toString()).click();
+			} 
+
+			function vizHandler(event, n) {
+				// handlle mobile tabs menu 
+				var mobileTabs = document.getElementsByClassName("itab-container");
+
+				// handle the desktop nav menu 
+				// styling handler for the datalink button to set active state
+				var desktopTabs = document.getElementsByClassName("custom-tab-container");
+				// run through all containers to clear and set active class
+				for  (i =0; i<desktopTabs.length; i++) {
+					// reset all 
+					desktopTabs[i].className = desktopTabs[i].className.replace(" active", "");
+					mobileTabs[i].style.display = "none";
+				}
+				// next set the clicked container to active
+				event.currentTarget.className += " active";
+				// set to display
+				mobileTabs[n-1].style.display = "block";
+
+				// call to remove and create the viz 
+				let container = document.getElementById('dashboard-' + n.toString());
+				let url = container.getAttribute('data-url');
+				let content = container.getAttribute('data-content');
+
+				// call function to create visualization 
+				createViz(url, content);
+			}
+
+			// function to create visualization with tableau javascriptAPI 
+			function createViz(url, content) {
+				// insert narrative for the dashboard 
+                document.getElementById("narrative").innerHTML = content;
+
+				// set viz container id and options for the tableau visualization 
                 var vizDiv = document.getElementById("vizContainer"),
                     options = {
                         hideToolbar: true,
@@ -435,7 +536,8 @@ class Dashboard_Widget extends Widget_Base {
                 }
 				// create a brand new visualisation 
                 viz = new tableau.Viz(vizDiv, url, options);
-            }
+			}
+			
 		</script>
 
 		<?php	
@@ -449,6 +551,44 @@ class Dashboard_Widget extends Widget_Base {
 	*/
 	protected function _content_template() {
 		?>
+		<!-- Navigation tab for mobile -->
+		<div class="custom-mobile-container">
+			<div class="custom-mobile-tab">
+				<#
+				if (settings.tabs) {
+					var tabindex = view.getIDInt().toString().substr( 0, 3 );
+					
+					_.each(settings.tabs, function (item, index) {
+						var tabCount = index + 1;
+				#>
+						<div 
+							class = 'itab-container fade'
+							id = "itab-container-{{ tabCount }}"
+							data-tab = "{{ tabCount }}"
+							tabindex = "{{ tabindex + tabCount }}"
+							role = 'mobile-tab'
+							aria-control = "itab-container-{{ tabindex + tabCount }}"
+							data-url="<?php echo $item['tab_url']['url'] ?>"
+							data-content="<?php echo $item['tab_content'] ?>"
+						>
+							<div class="custom-mobile-tab-item num">
+								{{ tabCount }}.
+							</div>
+							<div class="custom-mobile-tab-item">
+								{{ item.tab_title }}
+							</div>		
+						</div>
+				<# 
+					});
+				}
+				#>
+
+				<a class="prev" onclick="mobileVizHandler(-1)">&#10094;</a>
+				<a class="next" onclick="mobileVizHandler(1)">&#10095;</a>
+			</div>
+		</div>
+
+		<!-- Navigation tab for Desktop -->
 		<div class="custom-tabs" role="tablist">
 			<#
 			if (settings.tabs) {
@@ -458,33 +598,26 @@ class Dashboard_Widget extends Widget_Base {
 					<#
 					_.each(settings.tabs, function (item, index) {
 						var tabCount = index + 1;
-						if (tabCount == 1) {
 						#>
-						<button 
-							id="defaultDashboard"
+						<div
 							class="custom-tab-title tablinks"
-							tabindex="{{ tabindex + tabCount }}" 
+							id="dashboard-{{ tabCount }}"
 							data-tab="{{ tabCount }}"
-							role = "tab"
-							aria-control = "custom-tab-content-{{ tabindex + tabCount }}"
-							onclick="createViz(event, '<?php echo $item['tab_url']['url'] ?>', '<?php echo $item['tab_content'] ?>');"
-						>
-							{{ item.tab_title }}
-						</button>
-					<#
-						} else {
-					#>
-						<button 
-							class="custom-tab-title tablinks"
 							tabindex="{{ tabindex + tabCount }}" 
-							data-tab="{{ tabCount }}"
-							role = "tab"
-							aria-control = "custom-tab-content-{{ tabindex + tabCount }}"
-							onclick="createViz(event, '<?php echo $item['tab_url']['url'] ?>', '<?php echo $item['tab_content'] ?>');"
+							role = 'tab',
+							aria-controls = "custom-tab-containers-{{ tabindex + tabCount }}"
+							data-url="<?php echo $item['tab_url']['url'] ?>"
+							data-content="<?php echo $item['tab_content'] ?>"
+							onclick="vizHandler(event, {{ tabCount }});"
 						>
-							{{ item.tab_title }}
-						</button>
-					<# }}); #>
+							<div class="custom-tab-item num">
+								{{ tabCount }}.
+							</div>
+							<div>
+								{{ item.tab_title }}
+							</div>
+						</div>
+					<# }); #>
 				<!--</div>-->	
 			<# } #>
 		</div>
@@ -494,14 +627,64 @@ class Dashboard_Widget extends Widget_Base {
 			<p id="narrative" class="custom-tab-text" ></p>
         	<div id="vizContainer" class="custom-tab-dashboard"></div>
         </div>
-
+		
 		<!-- Adding custom Javascript -->
 		<script>
-            var viz;
+			// to keep track of current active mobile tab 
+            var tabIndex = 1;
+			// to keep the viz variable so that it can be 
+			// remove and recreate at anytime
+			var viz;
             
-			function createViz(event, url, narrative) { 
-				console.log("clicked!");
-                document.getElementById("narrative").innerHTML = narrative;
+			// set first click to display the first viz in the tabs
+			document.getElementById('dashboard-' + tabIndex.toString()).click();
+
+			function mobileVizHandler(n) {
+				tabIndex += n;
+
+				var mobileTabs = document.getElementsByClassName("itab-container");
+				// reset tabindex rule
+				if (tabIndex > mobileTabs.length) { tabIndex = 1 }
+				if (tabIndex < 1) { tabIndex = mobileTabs.length }
+
+				//console.log(tabIndex);
+				// click the desktop menu 
+				document.getElementById('dashboard-' + tabIndex.toString()).click();
+			} 
+
+			function vizHandler(event, n) {
+				// handlle mobile tabs menu 
+				var mobileTabs = document.getElementsByClassName("itab-container");
+
+				// handle the desktop nav menu 
+				// styling handler for the datalink button to set active state
+				var desktopTabs = document.getElementsByClassName("custom-tab-container");
+				// run through all containers to clear and set active class
+				for  (i =0; i<desktopTabs.length; i++) {
+					// reset all 
+					desktopTabs[i].className = desktopTabs[i].className.replace(" active", "");
+					mobileTabs[i].style.display = "none";
+				}
+				// next set the clicked container to active
+				event.currentTarget.className += " active";
+				// set to display
+				mobileTabs[n-1].style.display = "block";
+
+				// call to remove and create the viz 
+				let container = document.getElementById('dashboard-' + n.toString());
+				let url = container.getAttribute('data-url');
+				let content = container.getAttribute('data-content');
+
+				// call function to create visualization 
+				createViz(url, content);
+			}
+
+			// function to create visualization with tableau javascriptAPI 
+			function createViz(url, content) {
+				// insert narrative for the dashboard 
+                document.getElementById("narrative").innerHTML = content;
+
+				// set viz container id and options for the tableau visualization 
                 var vizDiv = document.getElementById("vizContainer"),
                     options = {
                         hideToolbar: true,
@@ -515,9 +698,9 @@ class Dashboard_Widget extends Widget_Base {
                 }
 				// create a brand new visualisation 
                 viz = new tableau.Viz(vizDiv, url, options);
-            }
+			}
+			
 		</script>
-
 		<?php
 	}
 }

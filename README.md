@@ -21,6 +21,15 @@ PHP, javascript (Tableau Javascript API, html javscript for user event), html, c
 
 ### Whats new 
 
+#### v 1.1.0
+1. remove package information in widget.php to avioud diplication in wordpress admin
+2. removed tab styling customization panel 
+3. Added sticky option to customization panel 
+4. Added styling based on figma design
+5. Added a seperate mobile menu  
+6. revised menu logic and code clean up  
+7. load tableau script in header to fix tableau cannot be found error
+
 #### v 1.0.4
 1. Added alignment configuration 
 2. Padding configuration for tab title

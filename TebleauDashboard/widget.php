@@ -159,12 +159,30 @@ class Dashboard_Widget extends Widget_Base {
 
 		$this-> end_controls_section();
 
-		// STYLE SECTION 
+		/* **********************************************************
+		* STYLE Section for Overall styling
+		*************************************************************/
 		$this->start_controls_section(
 			'section_tabs_style',
 			[
 				'label' => __( 'Dashboard', self::$slug ),
 				'tab' => \Elementor\Controls_Manager::TAB_STYLE,
+			]
+		);
+
+
+		$this->add_control(
+			'min_height',
+			[
+				'label' => __( 'Minimum height', self::$slug ),
+				'type' => \Elementor\Controls_Manager::NUMBER,
+				'min' => 300,
+				'max' => 2000,
+				'step' => 50,
+				'default' => 500,
+				'selectors' => [
+					'{{WRAPPER}} .custom-tab-dashboard' => 'min-height: {{VALUE}}px;',
+				],	
 			]
 		);
 
@@ -281,6 +299,42 @@ class Dashboard_Widget extends Widget_Base {
 		*/
 
 		$this->add_control(
+			'tab_margins',
+			[
+				'label' => __( 'Tab margin', 'plugin-domain' ),
+				'type' => \Elementor\Controls_Manager::DIMENSIONS,
+				'size_units' => [ 'px', '%', 'em' ],
+				'default' => [
+					'top' => 15,
+					'right' => 15,
+					'bottom' => 15,
+					'left' => 15,
+				],
+				'selectors' => [
+					'{{WRAPPER}} .custom-tab-container' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+
+		$this->add_control(
+			'tab_paddings',
+			[
+				'label' => __( 'Tab padding', 'plugin-domain' ),
+				'type' => \Elementor\Controls_Manager::DIMENSIONS,
+				'size_units' => [ 'px', '%', 'em' ],
+				'default' => [
+					'top' => 15,
+					'right' => 15,
+					'bottom' => 15,
+					'left' => 15,
+				],
+				'selectors' => [
+					'{{WRAPPER}} .custom-tab-container' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+
+		$this->add_control(
 			'hover_color',
 			[
 				'label' => __( 'onHover Color', 'elementor' ),
@@ -349,6 +403,7 @@ class Dashboard_Widget extends Widget_Base {
 			]
 		);
 
+		/*
 		$this->add_control(
 			'dashboard_ margin',
 			[
@@ -359,7 +414,7 @@ class Dashboard_Widget extends Widget_Base {
 					'{{WRAPPER}} .custom-tab-dashboard' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				],
 			]
-		);
+		);*/
 
 		$this-> end_controls_section();
 	}

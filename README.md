@@ -21,6 +21,18 @@ PHP, javascript (Tableau Javascript API, html javscript for user event), html, c
 
 ### Whats new 
 
+#### v 1.1.2
+1. added min-height options for dashboards
+2. added new styling control for tab margin 
+3. added new styling control for tab padding
+4. added middle alignment for viz that is smaller than the column size
+
+#### v 1.1.1
+1. added single viz display mode
+2. added logic create visualization function will not trigger when url string is empty
+3. adjust onclick into onload for live editor template to fix settings undefined error
+4. remove enqueue Tableau Javascript API and only inject when plugin template is created
+
 #### v 1.1.0
 1. remove package information in widget.php to avioud diplication in wordpress admin
 2. removed tab styling customization panel 
@@ -77,8 +89,7 @@ Tested both options.
 
 ## Additional Notes: 
 
-1. For now this widget is meant for one per page due to some JQuery and Tableau Javascript complication.
-2. Sticky option should be added from custom CSS. 
+1. Widget is meant for one per page due to some JQuery and Tableau Javascript complication.
 
 ## Reference: 
 https://tableau.github.io/embedding-playbook/pages/01_embedding_and_jsapi <br />

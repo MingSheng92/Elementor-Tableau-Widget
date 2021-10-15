@@ -29,6 +29,10 @@
 	background: #E7F1FF;
 }
 
+.custom-tab-container.normal {
+	background: none;
+}
+
 .custom-tab-item {
 	display: table-cell;
 	vertical-align: middle;
@@ -50,6 +54,7 @@
 
 .custom-tab-content {
 	border-style: solid;
+	margin-top: 0.6em;
 }
 
 .custom-tab-dashboard {

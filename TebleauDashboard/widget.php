@@ -18,6 +18,11 @@ class Dashboard_Widget extends Widget_Base {
 		wp_enqueue_script('tableau');
 		*/
 
+		// enqueue alpine js so that the plugin is reusable
+		// we need alpine as we cannot enqueue tableau API hence proper jquery encapsulation will not work
+		wp_register_script( 'alpine',  'https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.0/dist/alpine.min.js', null, null, true);
+		wp_enqueue_script('alpine');
+ 
 		// add our css file here 
 		wp_register_style( 'style-handle', '/wp-content/plugins/TebleauDashboard/css/dWidget.css');
 	}
@@ -424,6 +429,11 @@ class Dashboard_Widget extends Widget_Base {
 	 * @access protected 
 	 * 
 	*/
+	/**
+	 * Render custom widget output on the frontend
+	 * @access protected 
+	 * 
+	*/
 	protected function render() {
 		?>
 		<script type="text/javascript" src="https://public.tableau.com/javascripts/api/tableau-2.8.0.min.js"></script>
@@ -431,11 +441,95 @@ class Dashboard_Widget extends Widget_Base {
 		$tabs = $this->get_settings( 'tabs' );
 		
 		$id_int = substr( $this->get_id_int(), 0, 3 );
+		?>
+		<div 
+			x-data="{
+				tabIndex: 1,
+				viz: undefined,
+				options : {
+                    hideToolbar: true,
+                    hideTabs: true,
+                    device: window.innerWidth > 500 ? 'desktop' : 'phone'
+                },
+				narrative: '',
+				mobileVizHandler(n) {
+					this.tabIndex += n;
 
+					var mobileTabs = this.$el.querySelectorAll('.itab-container');
+					//console.log(this.$el.querySelectorAll('.itab-container').length);
+					
+					// reset tabindex rule
+					if (this.tabIndex > mobileTabs.length) { this.tabIndex = 1; }
+					if (this.tabIndex < 1) { this.tabIndex = mobileTabs.length; }
+
+					// click the desktop menu 
+					this.$refs['dashboard-' + this.tabIndex.toString()].click();
+				},
+				clickHandler(event) {
+
+					// handlle mobile tabs menu 
+					var mobileTabs = this.$el.querySelectorAll('.itab-container');
+
+					// handle the desktop nav menu 
+					// styling handler for the datalink button to set active state
+					var desktopTabs = this.$el.querySelectorAll('.custom-tab-container');
+
+					// run through all containers to clear and set active class
+					for  (i =0; i<desktopTabs.length; i++) {
+						// reset all 
+						desktopTabs[i].className = desktopTabs[i].className.replace(' active', '');
+						mobileTabs[i].style.display = 'none';
+					}
+					event.currentTarget.className += ' active';
+
+					// set to display
+					//mobileTabs[parseInt(event.currentTarget.getAttribute('data-tab'))-1].style.display = 'block';
+					this.$refs['itab-container-' + event.currentTarget.getAttribute('data-tab')].style.display = 'block';
+
+					// call create viz function
+					this.createViz(event.currentTarget.getAttribute('data-url'), event.currentTarget.getAttribute('data-content'));
+				},
+				createViz(url, content) { 
+					// check if the url is blank
+					if (this.isBlank(url)) {
+						return;
+					}
+
+					// add optional narrative into the dashboard area
+					this.narrative = content;
+
+					// Dispose viz if we have loaded another viz
+					if (this.viz !== undefined) {
+						this.viz.dispose();
+					}
+
+					// create a brand new visualisation
+	                this.viz = new tableau.Viz(this.$refs.containerDashboard, url, this.options);
+				},
+				isBlank(str) {
+					return (!!!str || /^\s*$/.test(str));
+				},
+				initialize() { 
+					// skip the styling if the widget is only displaying one Viz
+					if (this.$refs['itab-container-1'] !== undefined) {
+						this.$refs['itab-container-1'].style.display = 'block';
+					}
+
+					// add optional narrative into the dashboard area
+					this.narrative = this.$refs['dashboard-1'].getAttribute('data-content');
+
+					// create a brand new visualisation
+	                this.viz = new tableau.Viz(this.$refs.containerDashboard, this.$refs['dashboard-1'].getAttribute('data-url'), this.options);
+				}
+			}"
+			x-init="$nextTick(() => {
+				initialize();
+			})"
+		>
+		<?php
 		// render the tabs if there is more than one viz
 		if ( count($tabs) > 1 ) {
 		?>
-
 			<!-- Navigation tab for mobile -->
 			<div class="custom-mobile-container">
 				<div class="custom-mobile-tab">
@@ -443,6 +537,7 @@ class Dashboard_Widget extends Widget_Base {
 						$tab_count = $index + 1;
 					?>
 						<div 
+							x-ref= 'itab-container-<?php echo $tab_count ?>'
 							class = 'itab-container fade'
 							id = "itab-container-<?php echo $tab_count ?>"
 							data-tab = "<?php echo$tab_count ?>"
@@ -461,8 +556,18 @@ class Dashboard_Widget extends Widget_Base {
 						</div>
 					<?php endforeach ?>
 
-					<a class="prev" onclick="mobileVizHandler(-1)">&#10094;</a>
-					<a class="next" onclick="mobileVizHandler(1)">&#10095;</a>
+					<a 
+						class="prev" 
+						@click="mobileVizHandler(-1)"
+					>
+						&#10094;
+					</a>
+					<a 
+						class="next" 
+						@click="mobileVizHandler(1)"
+					>
+						&#10095;
+					</a>
 				</div>
 			</div>
 
@@ -478,6 +583,7 @@ class Dashboard_Widget extends Widget_Base {
 
 					//'id' => 'custom-tab-title-'. $id_int . $tab_count,
 					$ttl_attr = [
+						'x-ref' => 'dashboard-'. $tab_count,
 						'class' => ['custom-tab-container'],
 						'id' => 'dashboard-'. $tab_count,
 						'data-tab' => $tab_count,
@@ -486,19 +592,13 @@ class Dashboard_Widget extends Widget_Base {
 						'aria-controls' => 'custom-tab-containers-' . $id_int . $tab_count,
 					];
 
-					// append attribute 
 					$this->add_render_attribute( $tab_container_setting_key,  $ttl_attr);
-
-					/* back up  
-					<div <?php echo $this->get_render_attribute_string( $tab_container_setting_key ); ?>
-						onclick="createViz(event, '<?php echo $item['tab_url']['url'] ?>', '<?php echo $item['tab_content'] ?>');"
-					>
-					*/
 				?> 
-					<div <?php echo $this->get_render_attribute_string( $tab_container_setting_key ); ?>
+					<div
+						@click="clickHandler"
+						<?php echo $this->get_render_attribute_string( $tab_container_setting_key ); ?>
 						data-url="<?php echo $item['tab_url']['url'] ?>"
 						data-content="<?php echo $item['tab_content'] ?>"
-						onclick="vizHandler(event, <?php echo $tab_count?>);"
 					>
 						<div class="custom-tab-item num">
 							<?php echo $tab_count?>.
@@ -509,24 +609,21 @@ class Dashboard_Widget extends Widget_Base {
 					</div>
 				<?php endforeach ?>
 			</div>
-
 		<?php
 			// render template for one viz 
 			} else { 
 		?>
 			<div 
+				x-ref = 'dashboard-1'
 				class = 'fade'
-				id = "dashboard-1"
 				role = 'viz-board'
 				data-url="<?php echo $tabs[0]['tab_url']['url'] ?>"
 				data-content="<?php echo $tabs[0]['tab_content'] ?>"
-				onclick="createViz('<?php echo $tabs[0]['tab_url']['url'] ?>', '<?php echo $tabs[0]['tab_content'] ?>')"
 			>	
 			</div>
-		<?php } ?>
+		<?php } 
 
-		<?php 
-			// get settings for tab content
+		// get settings for tab content
 			$tab_content_setting_key = $this->get_repeater_setting_key('tab_content', 'tabs', 0);
 
 			$cont_attr = [
@@ -539,94 +636,15 @@ class Dashboard_Widget extends Widget_Base {
 			$this->add_render_attribute( $tab_content_setting_key,  $cont_attr);
 		?>
 
-		<!-- generate content for tabs -->
-		<div <?php echo $this->get_render_attribute_string($tab_content_setting_key) ?>>
-			<p id="narrative" class="custom-tab-text" ></p>
-			<div id="vizContainer" class="custom-tab-dashboard"></div>
-        </div>
+			<!-- generate content for tabs -->
+			<div 
+				<?php echo $this->get_render_attribute_string($tab_content_setting_key) 
+			?>>
+				<p id="narrative" class="custom-tab-text" x-text="narrative"></p>
+				<div x-ref="containerDashboard" id="vizContainer" class="custom-tab-dashboard"></div>
+			</div>
 
-		<!-- Adding custom Javascript -->
-		<script>
-			// to keep track of current active mobile tab 
-            var tabIndex = 1;
-			// to keep the viz variable so that it can be 
-			// remove and recreate at anytime
-			var viz;
-            
-			// set first click to display the first viz in the tabs
-			document.getElementById('dashboard-' + tabIndex.toString()).click();
-
-			function mobileVizHandler(n) {
-				tabIndex += n;
-
-				var mobileTabs = document.getElementsByClassName("itab-container");
-				// reset tabindex rule
-				if (tabIndex > mobileTabs.length) { tabIndex = 1 }
-				if (tabIndex < 1) { tabIndex = mobileTabs.length }
-
-				//console.log(tabIndex);
-				// click the desktop menu 
-				document.getElementById('dashboard-' + tabIndex.toString()).click();
-			} 
-
-			function vizHandler(event, n) {
-				// handlle mobile tabs menu 
-				var mobileTabs = document.getElementsByClassName("itab-container");
-
-				// handle the desktop nav menu 
-				// styling handler for the datalink button to set active state
-				var desktopTabs = document.getElementsByClassName("custom-tab-container");
-				// run through all containers to clear and set active class
-				for  (i =0; i<desktopTabs.length; i++) {
-					// reset all 
-					desktopTabs[i].className = desktopTabs[i].className.replace(" active", "");
-					mobileTabs[i].style.display = "none";
-				}
-				// next set the clicked container to active
-				event.currentTarget.className += " active";
-				// set to display
-				mobileTabs[n-1].style.display = "block";
-
-				// call to remove and create the viz 
-				let container = document.getElementById('dashboard-' + n.toString());
-				let url = container.getAttribute('data-url');
-				let content = container.getAttribute('data-content');
-
-				// call function to create visualization 
-				createViz(url, content);
-			}
-
-			// function to create visualization with tableau javascriptAPI 
-			function createViz(url, content) {
-				if (isBlank(url)) {
-					return;
-				}
-
-				// insert narrative for the dashboard 
-                document.getElementById("narrative").innerHTML = content;
-
-				// set viz container id and options for the tableau visualization 
-                var vizDiv = document.getElementById("vizContainer"),
-                    options = {
-                        hideToolbar: true,
-                        hideTabs: true,
-                        device: window.innerWidth > 500 ? 'desktop' : 'phone'
-                    };
-
-				// dispose of existing visualisation 
-                if (viz) { 
-                    viz.dispose();
-                }
-				// create a brand new visualisation 
-                viz = new tableau.Viz(vizDiv, url, options);
-			}
-			
-			// check if input is blank 
-			function isBlank(str) {
-				return (!!!str || /^\s*$/.test(str));
-			}
-		</script>
-
+		</div>
 		<?php	
 	}
 
@@ -639,42 +657,127 @@ class Dashboard_Widget extends Widget_Base {
 	protected function _content_template() {
 		?>
 		<script type="text/javascript" src="https://public.tableau.com/javascripts/api/tableau-2.8.0.min.js"></script>
+		<div 
+			x-data="{
+				tabIndex: 1,
+				viz: undefined,
+				options : {
+                    hideToolbar: true,
+                    hideTabs: true,
+                    device: window.innerWidth > 500 ? 'desktop' : 'phone'
+                },
+				narrative: '',
+				mobileVizHandler(n) {
+					this.tabIndex += n;
+
+					var mobileTabs = this.$el.querySelectorAll('.itab-container');
+					//console.log(this.$el.querySelectorAll('.itab-container').length);
+					
+					// reset tabindex rule
+					if (this.tabIndex > mobileTabs.length) { this.tabIndex = 1; }
+					if (this.tabIndex < 1) { this.tabIndex = mobileTabs.length; }
+
+					// click the desktop menu 
+					this.$refs['dashboard-' + this.tabIndex.toString()].click();
+				},
+				clickHandler(event) {
+
+					// handlle mobile tabs menu 
+					var mobileTabs = this.$el.querySelectorAll('.itab-container');
+
+					// handle the desktop nav menu 
+					// styling handler for the datalink button to set active state
+					var desktopTabs = this.$el.querySelectorAll('.custom-tab-container');
+
+					// run through all containers to clear and set active class
+					for  (i =0; i<desktopTabs.length; i++) {
+						// reset all 
+						desktopTabs[i].className = desktopTabs[i].className.replace(' active', '');
+						mobileTabs[i].style.display = 'none';
+					}
+					event.currentTarget.className += ' active';
+
+					// set to display
+					//mobileTabs[parseInt(event.currentTarget.getAttribute('data-tab'))-1].style.display = 'block';
+					this.$refs['itab-container-' + event.currentTarget.getAttribute('data-tab')].style.display = 'block';
+
+					// call create viz function
+					this.createViz(event.currentTarget.getAttribute('data-url'), event.currentTarget.getAttribute('data-content'));
+				},
+				createViz(url, content) { 
+					// check if the url is blank
+					if (this.isBlank(url)) {
+						return;
+					}
+
+					// add optional narrative into the dashboard area
+					this.narrative = content;
+
+					// Dispose viz if we have loaded another viz
+					if (this.viz !== undefined) {
+						this.viz.dispose();
+					}
+
+					// create a brand new visualisation
+	                this.viz = new tableau.Viz(this.$refs.containerDashboard, url, this.options);
+				},
+				isBlank(str) {
+					return (!!!str || /^\s*$/.test(str));
+				},
+				initialize() { 
+					// skip the styling if the widget is only displaying one Viz
+					if (this.$refs['itab-container-1'] !== undefined) {
+						this.$refs['itab-container-1'].style.display = 'block';
+					}
+
+					// add optional narrative into the dashboard area
+					this.narrative = this.$refs['dashboard-1'].getAttribute('data-content');
+
+					// create a brand new visualisation
+	                this.viz = new tableau.Viz(this.$refs.containerDashboard, this.$refs['dashboard-1'].getAttribute('data-url'), this.options);
+				}
+			}"
+			x-init="$nextTick(() => {
+				initialize();
+			})"
+		>
+
 		<#
-		if (settings.tabs ) {
-			if (settings.tabs.length != 1) {
+		if ( settings.tabs ) {
+			if ( settings.tabs.length != 1 ) {
 		#>
 		<!-- Navigation tab for mobile -->
 		<div class="custom-mobile-container">
 			<div class="custom-mobile-tab">
-				<#				
-					var tabindex = view.getIDInt().toString().substr( 0, 3 );
+			<#
+				var tabindex = view.getIDInt().toString().substr( 0, 3 );
 
-					_.each(settings.tabs, function (item, index) {
-						var tabCount = index + 1;
-				#>
-						<div 
-							class = 'itab-container fade'
-							id = "itab-container-{{ tabCount }}"
-							data-tab = "{{ tabCount }}"
-							tabindex = "{{ tabindex + tabCount }}"
-							role = 'mobile-tab'
-							aria-control = "itab-container-{{ tabindex + tabCount }}"
-							data-url="<?php echo $item['tab_url']['url'] ?>"
-							data-content="<?php echo $item['tab_content'] ?>"
-						>
-							<div class="custom-mobile-tab-item num">
-								{{ tabCount }}.
-							</div>
-							<div class="custom-mobile-tab-item">
-								{{ item.tab_title }}
-							</div>		
+				_.each(settings.tabs, function (item, index) {
+					var tabCount = index + 1;
+			#>
+					<div
+						x-ref= 'itab-container-{{ tabCount }}' 
+						class = 'itab-container fade'
+						id = "itab-container-{{ tabCount }}"
+						data-tab = "{{ tabCount }}"
+						tabindex = "{{ tabindex + tabCount }}"
+						role = 'mobile-tab'
+						aria-control = "itab-container-{{ tabindex + tabCount }}"
+						data-url="<?php echo $item['tab_url']['url'] ?>"
+						data-content="<?php echo $item['tab_content'] ?>"
+					>
+						<div class="custom-mobile-tab-item num">
+							{{ tabCount }}.
 						</div>
-				<# 
-					});
-				#>
-
-				<a class="prev" onclick="mobileVizHandler(-1)">&#10094;</a>
-				<a class="next" onclick="mobileVizHandler(1)">&#10095;</a>
+						<div class="custom-mobile-tab-item">
+							{{ item.tab_title }}
+						</div>		
+					</div>
+			<# 
+				});
+			#>
+				<a class="prev" @click="mobileVizHandler(-1)">&#10094;</a>
+				<a class="next" @click="mobileVizHandler(1)">&#10095;</a>
 			</div>
 		</div>
 		<# 
@@ -686,39 +789,34 @@ class Dashboard_Widget extends Widget_Base {
 		if (settings.tabs) {
 			if (settings.tabs.length != 1) {
 		#>
-		<!-- Navigation tab for Desktop -->
+			<!-- Navigation tab for Desktop -->
 		<div class="custom-tabs" role="tablist">
-
-				<!--<div class="custom-tabs-wrapper">-->
-					<#
-					
-					_.each(settings.tabs, function (item, index) {
-						var tabCount = index + 1;
-
-						//if (settings.tabs.length == 1) { return; }
-						#>
-						<div
-							class="custom-tab-title tablinks"
-							id="dashboard-{{ tabCount }}"
-							data-tab="{{ tabCount }}"
-							tabindex="{{ tabindex + tabCount }}" 
-							role = 'tab',
-							aria-controls = "custom-tab-containers-{{ tabindex + tabCount }}"
-							data-url="<?php echo $item['tab_url']['url'] ?>"
-							data-content="<?php echo $item['tab_content'] ?>"
-							onclick="vizHandler(event, {{ tabCount }});"
-						>
-							<div class="custom-tab-item num">
-								{{ tabCount }}.
-							</div>
-							<div>
-								{{ item.tab_title }}
-							</div>
-						</div>
-					<# 
-					}); 	
-					#>
-				<!--</div>-->	
+		<#
+			_.each(settings.tabs, function (item, index) {
+				var tabCount = index + 1;
+		#>
+			<div
+				x-ref = "dashboard-{{ tabCount }}"
+				class="custom-tab-title tablinks"
+				id="dashboard-{{ tabCount }}"
+				data-tab="{{ tabCount }}"
+				tabindex="{{ tabindex + tabCount }}" 
+				role = 'tab',
+				aria-controls = "custom-tab-containers-{{ tabindex + tabCount }}"
+				@click="clickHandler"
+				data-url="<?php echo $item['tab_url']['url'] ?>"
+				data-content="<?php echo $item['tab_content'] ?>"
+			>
+				<div class="custom-tab-item num">
+					{{ tabCount }}.
+				</div>
+				<div>
+					{{ item.tab_title }}
+				</div>
+			</div>
+		<# 
+			}); 
+		#>
 		<# 
 			}
 		}
@@ -730,6 +828,7 @@ class Dashboard_Widget extends Widget_Base {
 			if (settings.tabs.length == 1) {
 		#>
 			<div 
+				x-ref = 'dashboard-1'
 				class = 'fade'
 				id = "dashboard-1"
 				role = 'viz-board'
@@ -742,95 +841,12 @@ class Dashboard_Widget extends Widget_Base {
 			}
 		}
 		#>
-
-		<!-- generate content for tabs -->
-		<div class="custom-tab-content">
-			<p id="narrative" class="custom-tab-text" ></p>
-        	<div id="vizContainer" class="custom-tab-dashboard"></div>
-        </div>
-		
-		<!-- Adding custom Javascript -->
-		<script>
-			// to keep track of current active mobile tab 
-            var tabIndex = 1;
-			// to keep the viz variable so that it can be 
-			// remove and recreate at anytime
-			var viz;
-            
-			// set first click to display the first viz in the tabs
-			// disable auto click in live editor
-			//document.getElementById('dashboard-' + tabIndex.toString()).click();
-
-			function mobileVizHandler(n) {
-				tabIndex += n;
-
-				var mobileTabs = document.getElementsByClassName("itab-container");
-				// reset tabindex rule
-				if (tabIndex > mobileTabs.length) { tabIndex = 1 }
-				if (tabIndex < 1) { tabIndex = mobileTabs.length }
-
-				//console.log(tabIndex);
-				// click the desktop menu 
-				document.getElementById('dashboard-' + tabIndex.toString()).click();
-			} 
-
-			function vizHandler(event, n) {
-				// handlle mobile tabs menu 
-				var mobileTabs = document.getElementsByClassName("itab-container");
-
-				// handle the desktop nav menu 
-				// styling handler for the datalink button to set active state
-				var desktopTabs = document.getElementsByClassName("custom-tab-container");
-				// run through all containers to clear and set active class
-				for  (i =0; i<desktopTabs.length; i++) {
-					// reset all 
-					desktopTabs[i].className = desktopTabs[i].className.replace(" active", "");
-					mobileTabs[i].style.display = "none";
-				}
-				// next set the clicked container to active
-				event.currentTarget.className += " active";
-				// set to display
-				mobileTabs[n-1].style.display = "block";
-
-				// call to remove and create the viz 
-				let container = document.getElementById('dashboard-' + n.toString());
-				let url = container.getAttribute('data-url');
-				let content = container.getAttribute('data-content');
-
-				// call function to create visualization 
-				createViz(url, content);
-			}
-
-			// function to create visualization with tableau javascriptAPI 
-			function createViz(url, content) {
-				if (isBlank(url)) {
-					return;
-				}
-
-				// insert narrative for the dashboard 
-                document.getElementById("narrative").innerHTML = content;
-
-				// set viz container id and options for the tableau visualization 
-                var vizDiv = document.getElementById("vizContainer"),
-                    options = {
-                        hideToolbar: true,
-                        hideTabs: true,
-                        device: window.innerWidth > 500 ? 'desktop' : 'phone'
-                    };
-
-				// dispose of existing visualisation 
-                if (viz) { 
-                    viz.dispose();
-                }
-				// create a brand new visualisation 
-                viz = new tableau.Viz(vizDiv, url, options);
-			}
-			
-			// check if input is blank 
-			function isBlank(str) {
-				return (!!!str || /^\s*$/.test(str));
-			}
-		</script>
+			<!-- generate content for tabs -->
+			<div class="custom-tab-content">
+				<p id="narrative" class="custom-tab-text" x-text="narrative"></p>
+				<div x-ref="containerDashboard" id="vizContainer" class="custom-tab-dashboard"></div>
+			</div>
+		</div>
 		<?php
 	}
 }

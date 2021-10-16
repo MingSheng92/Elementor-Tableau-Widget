@@ -456,6 +456,7 @@ class Dashboard_Widget extends Widget_Base {
 					this.tabIndex += n;
 
 					var mobileTabs = this.$el.querySelectorAll('.itab-container');
+					//console.log(this.$root.getElementsByClassName('itab-container').length);
 					//console.log(this.$el.querySelectorAll('.itab-container').length);
 					
 					// reset tabindex rule
@@ -498,28 +499,38 @@ class Dashboard_Widget extends Widget_Base {
 					// add optional narrative into the dashboard area
 					this.narrative = content;
 
-					// Dispose viz if we have loaded another viz
-					if (this.viz !== undefined) {
-						this.viz.dispose();
-					}
+					try {
+						// Dispose viz if we have loaded another viz
+						if (this.viz !== undefined) {
+							this.viz.dispose();
+						}
 
-					// create a brand new visualisation
-	                this.viz = new tableau.Viz(this.$refs.containerDashboard, url, this.options);
+						// create a brand new visualisation
+						this.viz = new tableau.Viz(this.$refs.containerDashboard, url, this.options);
+					} catch (err) {
+						// display an generic error message
+						this.narrative = 'Something went wrong, please try again later.';
+						console.log(err.message);
+					}
 				},
 				isBlank(str) {
 					return (!!!str || /^\s*$/.test(str));
 				},
 				initialize() { 
-					// skip the styling if the widget is only displaying one Viz
-					if (this.$refs['itab-container-1'] !== undefined) {
-						this.$refs['itab-container-1'].style.display = 'block';
+					try {
+						// skip the styling if the widget is only displaying one Viz
+						if (this.$refs['itab-container-1'] !== undefined) {
+							this.$refs['itab-container-1'].style.display = 'block';
+						}
+
+						// add optional narrative into the dashboard area
+						this.narrative = this.$refs['dashboard-1'].getAttribute('data-content');
+
+						// create a brand new visualisation
+						this.viz = new tableau.Viz(this.$refs.containerDashboard, this.$refs['dashboard-1'].getAttribute('data-url'), this.options);
+					} catch (err) {
+						console.log(err.message);
 					}
-
-					// add optional narrative into the dashboard area
-					this.narrative = this.$refs['dashboard-1'].getAttribute('data-content');
-
-					// create a brand new visualisation
-	                this.viz = new tableau.Viz(this.$refs.containerDashboard, this.$refs['dashboard-1'].getAttribute('data-url'), this.options);
 				}
 			}"
 			x-init="$nextTick(() => {
@@ -713,28 +724,39 @@ class Dashboard_Widget extends Widget_Base {
 					// add optional narrative into the dashboard area
 					this.narrative = content;
 
-					// Dispose viz if we have loaded another viz
-					if (this.viz !== undefined) {
-						this.viz.dispose();
-					}
+					try {
+						// Dispose viz if we have loaded another viz
+						if (this.viz !== undefined) {
+							this.viz.dispose();
+						}
 
-					// create a brand new visualisation
-	                this.viz = new tableau.Viz(this.$refs.containerDashboard, url, this.options);
+						// create a brand new visualisation
+						this.viz = new tableau.Viz(this.$refs.containerDashboard, url, this.options);
+					} catch (err) {
+						// display an generic error message
+						this.narrative = 'Something went wrong, please try again later.';
+						console.log(err.message);
+					}
 				},
 				isBlank(str) {
 					return (!!!str || /^\s*$/.test(str));
 				},
 				initialize() { 
-					// skip the styling if the widget is only displaying one Viz
-					if (this.$refs['itab-container-1'] !== undefined) {
-						this.$refs['itab-container-1'].style.display = 'block';
+					try {
+						// skip the styling if the widget is only displaying one Viz
+						if (this.$refs['itab-container-1'] !== undefined) {
+							this.$refs['itab-container-1'].style.display = 'block';
+						}				
+
+						// add optional narrative into the dashboard area
+						this.narrative = this.$refs['dashboard-1'].getAttribute('data-content');
+
+						// create a brand new visualisation
+						this.viz = new tableau.Viz(this.$refs.containerDashboard, this.$refs['dashboard-1'].getAttribute('data-url'), this.options);
+					} catch (err) {
+						this.narrative = 'Tableau API does not work properly in Elementor live editor, use preview change or refresh the page.'
+						console.log(err.message);
 					}
-
-					// add optional narrative into the dashboard area
-					this.narrative = this.$refs['dashboard-1'].getAttribute('data-content');
-
-					// create a brand new visualisation
-	                this.viz = new tableau.Viz(this.$refs.containerDashboard, this.$refs['dashboard-1'].getAttribute('data-url'), this.options);
 				}
 			}"
 			x-init="$nextTick(() => {

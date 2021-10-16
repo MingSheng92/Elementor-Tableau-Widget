@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Elementor Tableau Dashboard Widget
  * Description: Custom Elementor Widget to display tableau dashboard dynamically.
- * Version:     1.2.0
+ * Version:     1.2.1
  * Author:      Ming Sheng Choo
  * Author URI:  https://github.com/MingSheng92
  * package URI: https://github.com/MingSheng92/Elementor-Tableau-Widget

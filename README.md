@@ -15,11 +15,18 @@ Stumbled upon tableau blog post where the official recommendation where it state
 The overall widget design is fairly straight forward, we will create a widget that can dynamic load any amount of dashboards that is added into the widget and only loads dashboards that is selected by the user and nothing more. With dynamic loading, we increase the site loading speed as it will load only one dashboard as compared to all dashboards with the original embedded approach. 
 
 ### Language used:
-PHP, javascript (Tableau Javascript API, html javscript for user event), html, css 
+PHP, Alpine JS, javascipt, html, css 
 
 ## Change Log
 
 ### Whats new 
+
+#### v 1.2.1
+1. added exception handling to display error message if Tableau Javascript API fails to load.
+
+#### v 1.2.0
+1. Migrate from javscript to alpine to support multiple usage of the widget
+2. added slight margin between dashboard tabs and dashboard area to avoid z-fighting issues when tableau API renders the dashboard.
 
 #### v 1.1.2
 1. added min-height options for dashboards

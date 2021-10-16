@@ -96,9 +96,10 @@ Tested both options.
 
 ## Additional Notes: 
 
-1. Widget is meant for one per page due to some JQuery and Tableau Javascript complication.
+1. Due to conflicting issue with Tableau embedded code, we can only inject script tag during render hence the Elementor Live Editor will not work properly. Kindly use live preview or refresh the editor to see the results. 
 
 ## Reference: 
 https://tableau.github.io/embedding-playbook/pages/01_embedding_and_jsapi <br />
 https://developers.elementor.com/creating-a-new-widget/ <br />
 https://developer.wordpress.org/plugins/ <br />
+https://naledi.co.uk/blog/javascript-api-and-alpine <br />

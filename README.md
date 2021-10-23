@@ -98,7 +98,8 @@ Tested both options.
 
 ## Additional Notes: 
 
-1. Due to conflicting issue with Tableau embedded code, we can only inject script tag during render hence the Elementor Live Editor will not work properly. Kindly use live preview or refresh the editor to see the results. 
+1. Due to conflicting issue with Tableau embedded code, we inject JavaScript during render.
+One issue that we found during test is that once we load Tableau JavaScript API tableau embedded code will not work due to function conflicting issues. Hence we cannot use enqueue script in Wordpress anymore(Enqueue will load script in the header doesnt matter if you have use the widget in the page or not).
 
 ## Reference: 
 https://tableau.github.io/embedding-playbook/pages/01_embedding_and_jsapi <br />
